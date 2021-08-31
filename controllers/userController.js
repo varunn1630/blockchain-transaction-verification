@@ -4,8 +4,8 @@ import asyncHandler from 'express-async-handler'
 //register function to register a user
 export const register = asyncHandler(async(req, res) => {
     console.log("you are in register api")
-    const {username, password, email, firstName, lastName} = req.body
-    if(!username || !password || !email || !firstName || !lastName){
+    const {username, password, email} = req.body
+    if(!username || !password || !email){
         return res.status(442).json({error:"please add all the fields"})
     }
     //checks database for a user with this username
