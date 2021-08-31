@@ -1,12 +1,14 @@
-import { getUsers, getUserById } from "../controllers/userController.js";
+import { register, login } from "../controllers/userController.js";
 import express from 'express'
+const User = require('../models/user')
 const router = express.Router()
 
 
-// express router method to create route for getting all users
-router.route('/').get(getUsers)
 
-// express router method to create route for getting users by id
-router.route('/:id').get(getUserById)
+// express router method to create route for registering users
+router.route('/register').get(register)
+
+// express router method to create route for logging in users
+router.route('/login').get(login)
 
 export default router
