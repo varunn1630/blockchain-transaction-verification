@@ -1,22 +1,111 @@
 import User from '../models/usersModel.js'
 import asyncHandler from 'express-async-handler'
 
-//getUsers function to get all users
-export const getUsers = asyncHandler(async(req, res) => {
-    const users = await User.find({})
-    res.json(users)
+//register function to register a user
+export const register = asyncHandler(async(req, res) => {
+    console.log("you are in register api")
+    const {username, password, email, firstName, lastName} = req.body
+    if(!username || !password || !email || !firstName || !lastName){
+        return res.status(442).json({error:"please add all the fields"})
+    }
+    //checks database for a user with this username
+    User.findOne({username:userName})
+    .then(savedUser=>{
+        //if a user by this username exists, error
+        if(savedUser){
+            return res.status(442).json({error:"Username Taken"})
+        }
+        //if it does not exist, hash the password
+    //   bcrypt.hash(Password,12)
+    //     .then(hashedPassword=>{
+    //         const Users = new User({
+    //             Username,
+    //             Password:hashedPassword,
+    //             Email,
+    //             FirstName,
+    //             LastName,
+    //             // temporarytoken: jwt.sign(Username, JWT_SECRET)
+    //             temporarytoken: jwt.sign(Username, process.env.JWT_SECRET)
+    //         })
+    //         Users.save()
+    //         .then(user=>{
+    //             console.log("saved successfully")
+    //             //res.send({msg:"saved successfully"})
+    //             console.log(user.id)
+    //             // sgMail.setApiKey(SENDGRID_KEY)
+    //             sgMail.setApiKey(process.env.SENDGRID_KEY)
+    //             const hrefLink = "https://listenin.us/verify/" + Users.temporarytoken;
+    //             const msg = {
+    //                 to: user.Email, // Change to your recipient
+    //                 from: 'noreply.listenin@gmail.com', // Change to your verified sender
+    //                 subject: 'Sending with SendGrid is Fun',
+    //                 text: `Hello ${Users.FirstName}, Click Here to Activate your Account.`,
+    //                 //html: `Hello<strong> ${Users.FirstName}</strong>,<br><br> Click Here to Activate your Account or don't I am not your mom`,
+    //                 html: `Hello<strong> ${Users.FirstName}</strong>,<br><br><a href=${hrefLink}> Click Here to Activate your Account.</a>`,
+    //             }
+    //             sgMail.send(msg)
+    //             .then(() => {
+    //                 console.log('Email sent')
+    //             })
+    //             .catch((error) => {
+    //                 console.error(error)
+    //             })
+    //             res.json({
+    //                 //ID: user.id,
+    //                 success: true,
+    //                 msg: "User has been successfully activated"
+    //             });
+    //          })
+    //         .catch(err=>{console.log(err)})
+    //     })
+    })
 })
 
-//getUserById function to retrieve user by id
-export const getUserById  = asyncHandler(async(req, res) => {
-    const user = await User.findById(req.params.id)
-
-    //if user id match param id send user else throw error
-    if(user){
-        res.json(user)
-    }else{
-        res.status(404).json({message: "User not found"})
-        res.status(404)
-        throw new Error('User not found')
+//login function to login a user
+export const login  = asyncHandler(async(req, res) => {
+    console.log("login")
+    const {Username,Password} = req.body
+    if(!Username || !Password){
+        console.log("something is missing")
+        return res.status(442).json({error:"Please add both Email and Password"})
     }
+    User.findOne({Username:Username})
+    .then(savedUser=>{
+        if(!savedUser){
+            console.log("username is scuffed")
+            return res.status(442).json({error:"Please add both Email and Password"})
+        }
+        // if(savedUser.active == false){
+        //     console.log("user not verified")
+        //     return res.status(442).json({error:"the user is not verified"})
+        // }
+        //console.log(Password + "  saved   " + savedUser.Password)
+        // bcrypt.compare(Password,savedUser.Password)
+        // .then(doMatch=>{
+        //     if(doMatch){
+        //         //res.json({msg:"successfully signed in"})
+        //         const token = jwt.sign(
+        //             {_id:savedUser._id},
+        //             // JWT_SECRET,
+        //             process.env.JWT_SECRET,
+        //             { expiresIn: 3600 },
+        //             (err, token) => {
+        //                 if(err) throw err;
+        //                 res.json({
+        //                     token,
+        //                     user: {
+        //                         id: savedUser._id,
+        //                         name: savedUser.FirstName,
+        //                         email: savedUser.Email
+        //                     }
+        //                 })
+        //             }
+        //         )
+        //     }
+        //     else{
+        //         console.log("pass is scuffed")
+        //         return res.status(442).json({error:"Please add both Email and Password"})
+        //     }
+        // }).catch(err=>{console.log(err)})
+    })
 })
