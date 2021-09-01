@@ -32,5 +32,13 @@
   "devDependencies": {
     "concurrently": "^6.2.0",
     "nodemon": "^2.0.9"
-  }
+  },
+  "scripts": {
+    "start": "node server.js",
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
+  },
+  //run node -v to get the node version and update this number, it will tell heroku what version of node to run
+  "engines": {
+    "node": "8.9.2"
+}
 }
