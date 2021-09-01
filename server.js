@@ -20,14 +20,14 @@ app.use('/api/users', userRoutes)
 
 app.use(cors())
 
-// ... other app.use middleware 
+/* // ... other app.use middleware 
 app.use(express.static(path.join(__dirname, "client", "build")))
 
 
 // Right before your app.listen(), add this:
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-});
+}); */
 
 //Express js listen method to run project on http://localhost:5000
 app.listen(PORT, console.log(`App is running in ${process.env.NODE_ENV} mode on port ${PORT}`))

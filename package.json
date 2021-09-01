@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon backend/server",
     "client": "npm start --prefix frontend",
-    "dev": "concurrently \"npm start\" \"npm run client\""
+    "dev": "concurrently \"npm start\" \"npm run client\"",
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,9 @@
   },
   "homepage": "https://github.com/RollingInCode/blockchain-transaction-verification#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.4.6",
     "axios": "^0.21.1",
+    "bcrypt": "^5.0.1",
     "config": "^3.3.6",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
@@ -33,12 +36,7 @@
     "concurrently": "^6.2.0",
     "nodemon": "^2.0.9"
   },
-  "scripts": {
-    "start": "node server.js",
-    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
-  },
-  //run node -v to get the node version and update this number, it will tell heroku what version of node to run
   "engines": {
-    "node": "8.9.2"
+    "node": "14.16.0"
 }
 }

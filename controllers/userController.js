@@ -16,48 +16,48 @@ export const registerUser = asyncHandler(async(req, res) => {
             return res.status(442).json({error:"Username Taken"})
         }
         //if it does not exist, hash the password
-    //   bcrypt.hash(Password,12)
-    //     .then(hashedPassword=>{
-    //         const Users = new User({
-    //             Username,
-    //             Password:hashedPassword,
-    //             Email,
-    //             FirstName,
-    //             LastName,
-    //             // temporarytoken: jwt.sign(Username, JWT_SECRET)
-    //             temporarytoken: jwt.sign(Username, process.env.JWT_SECRET)
-    //         })
-    //         Users.save()
-    //         .then(user=>{
-    //             console.log("saved successfully")
-    //             //res.send({msg:"saved successfully"})
-    //             console.log(user.id)
-    //             // sgMail.setApiKey(SENDGRID_KEY)
-    //             sgMail.setApiKey(process.env.SENDGRID_KEY)
-    //             const hrefLink = "https://listenin.us/verify/" + Users.temporarytoken;
-    //             const msg = {
-    //                 to: user.Email, // Change to your recipient
-    //                 from: 'noreply.listenin@gmail.com', // Change to your verified sender
-    //                 subject: 'Sending with SendGrid is Fun',
-    //                 text: `Hello ${Users.FirstName}, Click Here to Activate your Account.`,
-    //                 //html: `Hello<strong> ${Users.FirstName}</strong>,<br><br> Click Here to Activate your Account or don't I am not your mom`,
-    //                 html: `Hello<strong> ${Users.FirstName}</strong>,<br><br><a href=${hrefLink}> Click Here to Activate your Account.</a>`,
-    //             }
-    //             sgMail.send(msg)
-    //             .then(() => {
-    //                 console.log('Email sent')
-    //             })
-    //             .catch((error) => {
-    //                 console.error(error)
-    //             })
-    //             res.json({
-    //                 //ID: user.id,
-    //                 success: true,
-    //                 msg: "User has been successfully activated"
-    //             });
-    //          })
-    //         .catch(err=>{console.log(err)})
-    //     })
+       bcrypt.hash(Password,12)
+         .then(hashedPassword=>{
+             const Users = new User({
+                 Username,
+                 Password:hashedPassword,
+                 Email,
+                 FirstName,
+                 LastName,
+                 // temporarytoken: jwt.sign(Username, JWT_SECRET)
+                 temporarytoken: jwt.sign(Username, process.env.JWT_SECRET)
+             })
+             Users.save()
+             .then(user=>{
+                 console.log("saved successfully")
+                 //res.send({msg:"saved successfully"})
+                 console.log(user.id)
+                 // sgMail.setApiKey(SENDGRID_KEY)
+                 sgMail.setApiKey(process.env.SENDGRID_KEY)
+                 const hrefLink = "" + Users.temporarytoken;
+                 const msg = {
+                     to: user.Email, // Change to your recipient
+                     from: 'noreply.listenin@gmail.com', // Change to your verified sender
+                     subject: 'Sending with SendGrid is Fun',
+                     text: `Hello ${Users.FirstName}, Click Here to Activate your Account.`,
+                     //html: `Hello<strong> ${Users.FirstName}</strong>,<br><br> Click Here to Activate your Account or don't I am not your mom`,
+                     html: `Hello<strong> ${Users.FirstName}</strong>,<br><br><a href=${hrefLink}> Click Here to Activate your Account.</a>`,
+                 }
+                 sgMail.send(msg)
+                 .then(() => {
+                     console.log('Email sent')
+                 })
+                 .catch((error) => {
+                     console.error(error)
+                 })
+                 res.json({
+                     //ID: user.id,
+                     success: true,
+                     msg: "User has been successfully activated"
+                 });
+              })
+             .catch(err=>{console.log(err)})
+         })
     })
 })
 

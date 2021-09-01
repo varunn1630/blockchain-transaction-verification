@@ -1,6 +1,7 @@
-import { register, login } from "../controllers/userController.js";
+import { registerUser, loginUser, deleteUser} from "../controllers/userController.js";
 import express from 'express'
-const User = require('../models/user')
+
+import User from '../models/usersModel.js'
 const router = express.Router()
 
 
