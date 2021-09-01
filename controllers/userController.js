@@ -2,7 +2,7 @@ import User from '../models/usersModel.js'
 import asyncHandler from 'express-async-handler'
 
 //register function to register a user
-export const register = asyncHandler(async(req, res) => {
+export const registerUser = asyncHandler(async(req, res) => {
     console.log("you are in register api")
     const {username, password, email} = req.body
     if(!username || !password || !email){
@@ -62,7 +62,7 @@ export const register = asyncHandler(async(req, res) => {
 })
 
 //login function to login a user
-export const login  = asyncHandler(async(req, res) => {
+export const loginUser  = asyncHandler(async(req, res) => {
     console.log("login")
     const {Username,Password} = req.body
     if(!Username || !Password){
@@ -107,5 +107,22 @@ export const login  = asyncHandler(async(req, res) => {
         //         return res.status(442).json({error:"Please add both Email and Password"})
         //     }
         // }).catch(err=>{console.log(err)})
+    })
+})
+
+// function to delete users
+export const deleteUser  = asyncHandler(async(req, res) => {
+    const id = req.params.id;
+    if(!id){
+        console.log("id is missing")
+        return res.status(442).json({error:"ID is missing"})
+    }
+    User.deleteOne({_id: id}, function(err){
+        if(err) console.log(err);
+        res.json({
+            //ID: user.id,
+            success: true,
+            msg: "User has been successfully deleted"
+        });
     })
 })
