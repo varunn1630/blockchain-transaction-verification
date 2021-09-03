@@ -1,17 +1,20 @@
 import User from '../models/usersModel.js'
 import asyncHandler from 'express-async-handler'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 //register function to register a user
 export const registerUser = asyncHandler(async(req, res) => {
     console.log("you are in register api")
-    const {username, password, email} = req.body
-    if(!username || !password || !email){
+    const {Username, Password, Email} = req.body
+    if(!Username || !Password || !Email){
         return res.status(442).json({error:"please add all the fields"})
     }
     //checks database for a user with this username
-    User.findOne({username:userName})
+    User.findOne({Username:Username})
     .then(savedUser=>{
         //if a user by this username exists, error
+        console.log(savedUser)
         if(savedUser){
             return res.status(442).json({error:"Username Taken"})
         }
@@ -22,13 +25,12 @@ export const registerUser = asyncHandler(async(req, res) => {
                  Username,
                  Password:hashedPassword,
                  Email,
-                 FirstName,
-                 LastName,
                  // temporarytoken: jwt.sign(Username, JWT_SECRET)
-                 temporarytoken: jwt.sign(Username, process.env.JWT_SECRET)
+                 temporarytoken: jwt.sign(Username, process.env.JWT_SECRET),
+                 active: false
              })
              Users.save()
-             .then(user=>{
+             /* .then(user=>{
                  console.log("saved successfully")
                  //res.send({msg:"saved successfully"})
                  console.log(user.id)
@@ -56,8 +58,8 @@ export const registerUser = asyncHandler(async(req, res) => {
                      msg: "User has been successfully activated"
                  });
               })
-             .catch(err=>{console.log(err)})
-         })
+             .catch(err=>{console.log(err)}) */
+         }).catch(err=>{console.log(err)})
     })
 })
 
@@ -71,42 +73,43 @@ export const loginUser  = asyncHandler(async(req, res) => {
     }
     User.findOne({Username:Username})
     .then(savedUser=>{
+        console.log(savedUser)
         if(!savedUser){
             console.log("username is scuffed")
             return res.status(442).json({error:"Please add both Email and Password"})
         }
-        // if(savedUser.active == false){
-        //     console.log("user not verified")
-        //     return res.status(442).json({error:"the user is not verified"})
-        // }
-        //console.log(Password + "  saved   " + savedUser.Password)
-        // bcrypt.compare(Password,savedUser.Password)
-        // .then(doMatch=>{
-        //     if(doMatch){
-        //         //res.json({msg:"successfully signed in"})
-        //         const token = jwt.sign(
-        //             {_id:savedUser._id},
-        //             // JWT_SECRET,
-        //             process.env.JWT_SECRET,
-        //             { expiresIn: 3600 },
-        //             (err, token) => {
-        //                 if(err) throw err;
-        //                 res.json({
-        //                     token,
-        //                     user: {
-        //                         id: savedUser._id,
-        //                         name: savedUser.FirstName,
-        //                         email: savedUser.Email
-        //                     }
-        //                 })
-        //             }
-        //         )
-        //     }
-        //     else{
-        //         console.log("pass is scuffed")
-        //         return res.status(442).json({error:"Please add both Email and Password"})
-        //     }
-        // }).catch(err=>{console.log(err)})
+        if(savedUser.active == false){
+            console.log("user not verified")
+            return res.status(442).json({error:"the user is not verified"})
+        }
+        console.log(Password + "  saved   " + savedUser.Password)
+        bcrypt.compare(Password,savedUser.Password)
+        .then(doMatch=>{
+            if(doMatch){
+                //res.json({msg:"successfully signed in"})
+                const token = jwt.sign(
+                    {_id:savedUser._id},
+                    // JWT_SECRET,
+                    process.env.JWT_SECRET,
+                    { expiresIn: 3600 },
+                    (err, token) => {
+                        if(err) throw err;
+                        res.json({
+                            token,
+                            user: {
+                                id: savedUser._id,
+                                name: savedUser.FirstName,
+                                email: savedUser.Email
+                            }
+                        })
+                    }
+                )
+            }
+            else{
+                console.log("pass is scuffed")
+                return res.status(442).json({error:"Please add both Email and Password"})
+            }
+        }).catch(err=>{console.log(err)})
     })
 })
 

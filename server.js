@@ -14,9 +14,10 @@ connectDB()
 dotenv.config()
 
 const app = express()
+app.use(express.json())
 
 //Creating API for user
-app.use('/api/users', userRoutes)
+app.use('/api', userRoutes)
 
 app.use(cors())
 
