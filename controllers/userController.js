@@ -2,6 +2,7 @@ import User from '../models/usersModel.js'
 import asyncHandler from 'express-async-handler'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import sgMail from '@sendgrid/mail'
 
 //register function to register a user
 export const registerUser = asyncHandler(async(req, res) => {
@@ -14,7 +15,6 @@ export const registerUser = asyncHandler(async(req, res) => {
     User.findOne({Username:Username})
     .then(savedUser=>{
         //if a user by this username exists, error
-        console.log(savedUser)
         if(savedUser){
             return res.status(442).json({error:"Username Taken"})
         }
@@ -30,20 +30,17 @@ export const registerUser = asyncHandler(async(req, res) => {
                  active: false
              })
              Users.save()
-             /* .then(user=>{
+             .then(user=>{
                  console.log("saved successfully")
-                 //res.send({msg:"saved successfully"})
-                 console.log(user.id)
-                 // sgMail.setApiKey(SENDGRID_KEY)
-                 sgMail.setApiKey(process.env.SENDGRID_KEY)
-                 const hrefLink = "" + Users.temporarytoken;
+                 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+                 const hrefLink = "https://blkchn-trxn-verif.herokuapp.com/api/verify/" + Users.temporarytoken;
                  const msg = {
                      to: user.Email, // Change to your recipient
-                     from: 'noreply.listenin@gmail.com', // Change to your verified sender
-                     subject: 'Sending with SendGrid is Fun',
-                     text: `Hello ${Users.FirstName}, Click Here to Activate your Account.`,
+                     from: 'BlockChainUCFSD@gmail.com', // Change to your verified sender
+                     subject: 'Testing Register',
+                     text: `Hello ${Users.Username}, Click Here to Activate your Account.`,
                      //html: `Hello<strong> ${Users.FirstName}</strong>,<br><br> Click Here to Activate your Account or don't I am not your mom`,
-                     html: `Hello<strong> ${Users.FirstName}</strong>,<br><br><a href=${hrefLink}> Click Here to Activate your Account.</a>`,
+                     html: `Hello<strong> ${Users.Username}</strong>,<br><br><a href=${hrefLink}> Click Here to Activate your Account.</a>`,
                  }
                  sgMail.send(msg)
                  .then(() => {
@@ -58,7 +55,7 @@ export const registerUser = asyncHandler(async(req, res) => {
                      msg: "User has been successfully activated"
                  });
               })
-             .catch(err=>{console.log(err)}) */
+             .catch(err=>{console.log(err)})
          }).catch(err=>{console.log(err)})
     })
 })
