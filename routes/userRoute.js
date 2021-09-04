@@ -1,4 +1,4 @@
-import { registerUser, loginUser, deleteUser} from "../controllers/userController.js";
+import { registerUser, loginUser, deleteUser, verifyUser} from "../controllers/userController.js";
 import express from 'express'
 
 import User from '../models/usersModel.js'
@@ -13,6 +13,10 @@ router.route('/register').post(registerUser)
 router.route('/login').post(loginUser)
 
 // express router method to create route for deleting users
-router.route('/delete/:id').get(deleteUser)
+router.route('/delete/:id').delete(deleteUser)
+
+// router method to create route for verifying email
+router.route('/verify/:id').put(verifyUser)
+
 
 export default router

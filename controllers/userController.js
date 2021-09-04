@@ -37,7 +37,7 @@ export const registerUser = asyncHandler(async(req, res) => {
                  const msg = {
                      to: user.Email, // Change to your recipient
                      from: 'BlockChainUCFSD@gmail.com', // Change to your verified sender
-                     subject: 'Testing Register',
+                     subject: 'Thank you For Registering with BlockChain Transaction Verification',
                      text: `Hello ${Users.Username}, Click Here to Activate your Account.`,
                      //html: `Hello<strong> ${Users.FirstName}</strong>,<br><br> Click Here to Activate your Account or don't I am not your mom`,
                      html: `Hello<strong> ${Users.Username}</strong>,<br><br><a href=${hrefLink}> Click Here to Activate your Account.</a>`,
@@ -124,5 +124,59 @@ export const deleteUser  = asyncHandler(async(req, res) => {
             success: true,
             msg: "User has been successfully deleted"
         });
+    })
+})
+
+//function to verify users
+export const verifyUser  = asyncHandler(async(req, res) => {
+    User.findOne({ temporarytoken: req.params.id }, (err, user) => {
+        if (err) throw err; // Throw error if cannot login
+        const token = req.params.id // Save the token from URL for verification
+        console.log("the token is", token)
+        // Function to verify the user's token
+        // jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+            if (err) {
+                console.log(err);
+                res.status(442).json({ error: "Activation link has expired." }); // Token is expired
+            } else if (!user) {
+                res.status(442).json({ error: "Activation link has expired.2" }); // Token may be valid but does not match any user in the database
+            } else {
+                user.temporarytoken = false; // Remove temporary token
+                user.active = true; // Change account status to Activated
+                // Mongoose Method to save user into the database
+                user.save(err => {
+                    if (err) {
+                        console.log(err); // If unable to save user, log error info to console/terminal
+                    } else {
+                        // If save succeeds, create e-mail object
+                        // sgMail.setApiKey(SENDGRID_KEY)
+                        sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+                        console.log("creating email");
+                        const msg = {
+                            to: user.Email, // Change to your recipient
+                            from: 'BlockChainUCFSD@gmail.com', // Change to your verified sender
+                            subject: 'Verified',
+                            text: `Hello ${user.Username}, Your account has been successfully activated!`,
+                            //html: `Hello<strong> ${Users.FirstName}</strong>,<br><br> Click Here to Activate your Account or don't I am not your mom`,
+                            html: `Hello<strong> ${user.Username},</strong>,<br><br>Your account has been successfully activated!`,
+                        }
+                        // Send e-mail object to user
+                        console.log("sending email");
+                        sgMail.send(msg)
+                        .then(() => {
+                            console.log('Email sent')
+                        })
+                        .catch((error) => {
+                            console.error(error)
+                        })
+                        res.json({
+                            success: true,
+                            msg: "User has been successfully activated9875343"
+                        })
+                    }
+                })
+            }
+        })
     })
 })
