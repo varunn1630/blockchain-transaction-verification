@@ -1,5 +1,6 @@
 import connectDB from './config/db.js'
 import userRoutes from './routes/userRoute.js'
+import supplierRoutes from './routes/supplierRoute.js'
 import express from 'express'
 import dotenv  from 'dotenv'
 import cors from 'cors'
@@ -18,6 +19,8 @@ app.use(express.json())
 
 //Creating API for user
 app.use('/api', userRoutes)
+app.use('/apisup', supplierRoutes)
+
 
 app.use(cors())
 
