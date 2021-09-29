@@ -3,7 +3,7 @@ import userRoutes from './routes/userRoute.js'
 import express from 'express'
 import dotenv  from 'dotenv'
 import cors from 'cors'
-import path from 'path'
+import path from 'path'// yo
 
 const PORT = process.env.PORT || 5000
 
